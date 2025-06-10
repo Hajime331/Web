@@ -1,11 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        .setMute {
+            color: red;
+        }
+
+        #controlPanel {
+            border: 2px solid black;
+            width: 800px;
+            padding: 20px;
+            margin: auto;
+            border-radius: 16px;
+        }
+
+        #controlPanel span {
+            border: 1px solid black;
+            cursor: pointer;
+            font-size: 1.5rem;
+            box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+            padding: 8px;
+            font-family: webdings;
+            border-radius: 8px;
+        }
+    </style>
 </head>
+
 <body>
-    
+
+    <audio id=myMusic src="music/moon.mp3" controls></audio>
+
+    <div id="controlPanel">
+        <div id="controlButtons">
+            <span onclick="playMusic(event)">4</span>
+            <span onclick="stopMusic(event)">&lt;</span>
+            <span onclick="changeTime(-5)">7</span>
+            <span onclick="changeTime(5)">8</span>
+            <span onclick="setMute(event)">U</span>
+        </div>
+        <hr>
+        <div id="volumeControl">
+            <input type="range" onclick="setVolumeByRangeBar(evnet)" value="100">
+            <button onclick="changeVolume(-1)">-</button>
+            <button onclick="changeVolume(1)">+</button>
+            <input type="text" value="100" readonly>
+        </div>
+    </div>
+
+    <script>
+        let myMusic = document.getElementById("myMusic");
+        let controlPanel = document.getElementById("controlPanel");
+
+
+        // Rangebar 調整音量
+        function setVolumeByRangeBar(e) {
+            volumeControl.value = e.target.value // ???
+        }
+
+        // Button 調整音量
+        function changeVolume(v) {
+            myMusic.volume = (myMusic.volume * 100 + v) / 100;
+            volumeControl.children[3].value = myMusic.volume * 100;
+        }
+
+        // 設定靜音
+        function setMute(e) {
+            myMusic.muted = !myMusic.muted;
+            e.target.className = myMusic.muted ? "" : "setMute";
+            e.target.innerHTML = e.target.innerHTML === "V" ? "U" : "V";
+        }
+
+        // 快轉與倒轉
+        function changeTime(s) {
+            myMusic.currentTime += s;
+        }
+
+        // 播放音樂
+        function playMusic(e) {
+            myMusic.play(e);
+            event.target.innerHTML = ";";
+            event.target.onclick = pauseMusic;
+        }
+
+        // 暫停音樂
+        function pauseMusic(e) {
+            myMusic.pause(e);
+            event.target.innerHTML = "4";
+            event.target.onclick = playMusic;
+        }
+
+        // 停止音樂，將音樂的播放時間重置為 0
+        function stopMusic(e) {
+            myMusic.pause(e);
+            myMusic.currentTime = 0;
+            event.target.previousElementSibling.innerHTML = "4";
+            event.target.previousElementSibling.onclick = playMusic;
+        }
+    </script>
 </body>
+
 </html>
