@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .textStyle {
+            color: rgb(47, 0, 255);
+            font-size: 2rem;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 使用 jQuery 來操作 DOM -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    
+    <script>
+        // {} 集合資料
+        $.ajax({
+
+            // HTTP 傳輸方式
+            type: "GET",
+
+            // 資料來源網址，以文字形式貼上
+            url:'https://data.moa.gov.tw/Service/OpenData/ODwsv/ODwsvAttractions.aspx',
+
+            // 連線成功時執行的程式
+            success:function(response){
+                console.log(response);
+            }
+        });
+    </script>
+</body>
+
+</html>

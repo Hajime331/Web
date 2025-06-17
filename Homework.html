@@ -6,6 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        :root {
+            --vol-thumb-appearance: none;
+            --vol-thumb-width: 16px;
+            --vol-thumb-height: 16px;
+            --vol-thumb-background-color: black;
+            --vol-thumb-border-radius: 10px;
+            --vol-thumb-cursor: pointer;
+        }
+
         .setMute {
             color: red;
         }
@@ -15,17 +24,55 @@
             width: 800px;
             padding: 20px;
             margin: auto;
-            border-radius: 16px;
+            border-radius: 20px;
         }
 
         #controlPanel span {
             border: 1px solid black;
             cursor: pointer;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
             padding: 8px;
             font-family: webdings;
-            border-radius: 8px;
+            border-radius: 10px;
+        }
+
+        #volumeControl>input[type="text"] {
+            width: 30px;
+            background-color: black;
+            color: orange;
+            text-align: center;
+        }
+
+        #volumeControl>input[type="range"] {
+            width: 600px;
+            height: 8px;
+            appearance: none;
+            background-color: orange;
+            border-radius: 5px;
+        }
+
+        #volumeControl>input[type="range"]::-webkit-slider-thumb {
+            appearance: var(--vol-thumb-appearance);
+            width: var(--vol-thumb-width);
+            height: var(--vol-thumb-height);
+            background-color: var(--vol-thumb-background-color);
+            border-radius: var(--vol-thumb-border-radius);
+            cursor: var(--vol-thumb-cursor);
+        }
+
+        #volumeControl>input[type="range"]::-moz-range-thumb {
+            width: var(--vol-thumb-width);
+            height: var(--vol-thumb-height);
+            background-color: var(--vol-thumb-background-color);
+            border-radius: var(--vol-thumb-border-radius);
+            cursor: var(--vol-thumb-cursor);
+        }
+
+        #volumeControl>button {
+            border-radius: 5px;
+            border-width: 0.5px;
+
         }
     </style>
 </head>
@@ -44,7 +91,7 @@
         </div>
         <hr>
         <div id="volumeControl">
-            <input type="range" onclick="setVolumeByRangeBar(evnet)" value="100">
+            <input type="range" oninput="setVolumeByRangeBar(event)" value="100">
             <button onclick="changeVolume(-1)">-</button>
             <button onclick="changeVolume(1)">+</button>
             <input type="text" value="100" readonly>
@@ -55,22 +102,34 @@
         let myMusic = document.getElementById("myMusic");
         let controlPanel = document.getElementById("controlPanel");
 
+        let textvolume = volumeControl.children[3];
+        let rangeVolume = volumeControl.children[0];
+
+        // 初始化音量
+        setVolumeByRangeBar();
+
 
         // Rangebar 調整音量
-        function setVolumeByRangeBar(e) {
-            volumeControl.value = e.target.value // ???
+        function setVolumeByRangeBar() {
+            textvolume.value = rangeVolume.value
+
+            // 真正寫入音量屬性值
+            myMusic.volume = textvolume.value / 100;
+
+            // 音量條上色
+            rangeVolume.style.backgroundImage = `linear-gradient(to right, rgb(255, 179, 14) ${rangeVolume.value}%,rgb(240, 240, 240) ${rangeVolume.value}%)`;
         }
 
         // Button 調整音量
         function changeVolume(v) {
-            myMusic.volume = (myMusic.volume * 100 + v) / 100;
-            volumeControl.children[3].value = myMusic.volume * 100;
+            rangeVolume.value = parseInt(rangeVolume.value) + v;
+            setVolumeByRangeBar();
         }
 
         // 設定靜音
         function setMute(e) {
             myMusic.muted = !myMusic.muted;
-            e.target.className = myMusic.muted ? "" : "setMute";
+            e.target.className = myMusic.muted ? "setMute" : "";
             e.target.innerHTML = e.target.innerHTML === "V" ? "U" : "V";
         }
 
